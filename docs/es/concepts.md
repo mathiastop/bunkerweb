@@ -96,7 +96,7 @@ app2.example.com_WHITELIST_COUNTRY=FR
 app3.example.com_USE_BAD_BEHAVIOR=no
 ```
 
-Ten en cuenta que el modo multisitio es implícito cuando se utiliza la interfaz de usuario web. Tienes la opción de aplicar configuraciones directamente a tus servicios o de establecer una configuración global que se aplicará a todos tus servicios (aún puedes aplicar excepciones directamente a servicios específicos):
+Ten en cuenta que el modo multisitio es implícito cuando se utiliza la interfaz de usuario web. Tienes la opción de aplicar configuraciones directamente a tus servicios o de establecer ajustes globales que se aplicarán a todos tus servicios (aún puedes aplicar excepciones directamente a servicios específicos):
 
 <figure markdown>
   ![Descripción general](assets/img/ui-multisite.png){ align=center, width="600" }

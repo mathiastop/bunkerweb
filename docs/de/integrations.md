@@ -3419,7 +3419,7 @@ Und Sie können nun zum Einrichtungsassistenten gehen, indem Sie zu `https://bun
 
 **Schutz einer bestehenden Anwendung**
 
-**Zuerst müssen Sie zu Global Config gehen, das SSL-Plugin auswählen und dann die automatische Weiterleitung von HTTP zu HTTPS deaktivieren. Bitte beachten Sie, dass Sie dies nur einmal tun müssen.**
+**Zuerst müssen Sie zu den Globalen Einstellungen gehen, das SSL-Plugin auswählen und dann die automatische Weiterleitung von HTTP zu HTTPS deaktivieren. Bitte beachten Sie, dass Sie dies nur einmal tun müssen.**
 
 Nehmen wir an, Sie haben eine Anwendung im Namespace `myapp`, die über den Dienst `myapp-service` auf Port `5000` zugänglich ist.
 

@@ -96,7 +96,7 @@ app2.example.com_WHITELIST_COUNTRY=FR
 app3.example.com_USE_BAD_BEHAVIOR=no
 ```
 
-Veuillez noter que le mode multisite est implicite lors de l'utilisation de l'interface utilisateur Web. Vous avez la possibilité d'appliquer des configurations directement à vos services ou de définir une configuration globale qui sera appliquée à tous vos services (vous pouvez toujours appliquer des exceptions directement à des services spécifiques):
+Veuillez noter que le mode multisite est implicite lors de l'utilisation de l'interface utilisateur Web. Vous avez la possibilité d'appliquer des configurations directement à vos services ou de définir des paramètres globaux qui seront appliqués à tous vos services (vous pouvez toujours appliquer des exceptions directement à des services spécifiques):
 
 <figure markdown>
   ![Vue d'ensemble](assets/img/ui-multisite.png){ align=center, width="600" }

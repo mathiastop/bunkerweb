@@ -103,20 +103,20 @@ def _resolve_instances(path_normalized: str, method_u: str) -> tuple[Optional[st
     return rtype, None
 
 
-def _resolve_global_config(path_normalized: str, method_u: str) -> tuple[Optional[str], Optional[str]]:
-    """Resolve global_config endpoints to fine-grained permissions.
+def _resolve_global_settings(method_u: str) -> tuple[Optional[str], Optional[str]]:
+    """Resolve global_settings endpoints to fine-grained permissions.
 
     Supported endpoints:
-    - GET              /global_config       -> global_config_read
-    - POST|PUT|PATCH   /global_config       -> global_config_update
-    Also accepts hyphenated path prefix (global-config) but canonicalizes rtype to global_config.
+    - GET              /global_settings       -> global_settings_read
+    - POST|PUT|PATCH   /global_settings       -> global_settings_update
+    Also accepts hyphenated path prefix (global-settings) but canonicalizes rtype to global_settings.
     """
-    rtype = "global_config"
+    rtype = "global_settings"
     verb = PERM_VERB_BY_METHOD.get(method_u)
     if verb == "read":
-        return rtype, "global_config_read"
+        return rtype, "global_settings_read"
     if verb in {"create", "update"}:
-        return rtype, "global_config_update"
+        return rtype, "global_settings_update"
     # For DELETE or other methods, no fine-grained permission mapping
     return rtype, None
 
@@ -325,9 +325,9 @@ def _resolve_resource_and_perm(path: str, method: str) -> tuple[Optional[str], O
     # Instances special cases
     if first in {"instances", "reload", "stop"}:
         return _resolve_instances(p, method_u)
-    # Global config special cases (canonicalize hyphenated version)
-    if first in {"global_config", "global-config"}:
-        return _resolve_global_config(p, method_u)
+    # Global settings special cases (canonicalize hyphenated version)
+    if first in {"global_settings", "global-settings"}:
+        return _resolve_global_settings(method_u)
     # Services special cases
     if first == "services":
         return _resolve_services(p, method_u)
@@ -366,7 +366,7 @@ def _extract_resource_id(path: str, rtype: Optional[str]) -> Optional[str]:
     if not parts:
         return None
     # Skip known action-like endpoints without IDs
-    if parts[0] in {"reload", "stop", "ban", "unban", "bans", "global_config", "global-config"}:
+    if parts[0] in {"reload", "stop", "ban", "unban", "bans", "global_settings", "global-settings"}:
         return None
     # Skip services action endpoints when extracting ID
     if parts[0] == "services" and len(parts) >= 2 and parts[1] in {"convert", "export"}:

@@ -3386,7 +3386,7 @@ Et vous pouvez maintenant passer à l'assistant de configuration en accédant à
 
 **Protection de l'application existante**
 
-**Tout d'abord, vous devrez vous rendre dans Global Config, sélectionner le plugin SSL, puis désactiver la redirection automatique HTTP vers HTTPS. Veuillez noter que vous n'avez besoin de le faire qu'une seule fois.**
+**Tout d'abord, vous devrez vous rendre dans Paramètres globaux, sélectionner le plugin SSL, puis désactiver la redirection automatique HTTP vers HTTPS. Veuillez noter que vous n'avez besoin de le faire qu'une seule fois.**
 
 Supposons que vous ayez une application dans l'espace de `myapp` noms qui est accessible à l'aide du `myapp-service` service sur le port `5000`.
 

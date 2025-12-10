@@ -3418,7 +3418,7 @@ Y ahora puedes proceder al asistente de configuración navegando a `https://bunk
 
 **Protegiendo una aplicación existente**
 
-**En primer lugar, deberás ir a Configuración Global, seleccionar el plugin SSL y luego deshabilitar la redirección automática de HTTP a HTTPS. Ten en cuenta que solo necesitas hacerlo una vez.**
+**En primer lugar, deberás ir a los Ajustes globales, seleccionar el plugin SSL y luego deshabilitar la redirección automática de HTTP a HTTPS. Ten en cuenta que solo necesitas hacerlo una vez.**
 
 Supongamos que tienes una aplicación en el espacio de nombres `myapp` que es accesible a través del servicio `myapp-service` en el puerto `5000`.
 

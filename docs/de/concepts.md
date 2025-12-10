@@ -96,7 +96,7 @@ app2.example.com_WHITELIST_COUNTRY=FR
 app3.example.com_USE_BAD_BEHAVIOR=no
 ```
 
-Bitte beachten Sie, dass der Multisite-Modus bei Verwendung der Web-Benutzeroberfläche implizit ist. Sie haben die Möglichkeit, Konfigurationen direkt auf Ihre Dienste anzuwenden oder eine globale Konfiguration festzulegen, die auf alle Ihre Dienste angewendet wird (Sie können immer noch Ausnahmen direkt auf bestimmte Dienste anwenden):
+Bitte beachten Sie, dass der Multisite-Modus bei Verwendung der Web-Benutzeroberfläche implizit ist. Sie haben die Möglichkeit, Konfigurationen direkt auf Ihre Dienste anzuwenden oder globale Einstellungen festzulegen, die auf alle Ihre Dienste angewendet werden (Sie können immer noch Ausnahmen direkt auf bestimmte Dienste anwenden):
 
 <figure markdown>
   ![Übersicht](assets/img/ui-multisite.png){ align=center, width="600" }

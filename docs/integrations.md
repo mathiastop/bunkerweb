@@ -3469,7 +3469,7 @@ And you can now proceed to the setup wizard by browsing to `https://bunkerweb.ex
 
 **Protecting existing application**
 
-**First of all, you will need to go to Global Config, select the SSL plugin and then disable the Auto redirect HTTP to HTTPS. Please note that you only need to do it one time.**
+**First of all, you will need to go to Global Settings, select the SSL plugin and then disable the Auto redirect HTTP to HTTPS. Please note that you only need to do it one time.**
 
 Let's assume that you have an application in the `myapp` namespace which is accessible using the `myapp-service` service on port `5000`.
 

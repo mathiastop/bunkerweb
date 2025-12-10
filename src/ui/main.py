@@ -64,7 +64,7 @@ from app.routes.about import about
 from app.routes.bans import bans
 from app.routes.cache import cache
 from app.routes.configs import configs
-from app.routes.global_config import global_config
+from app.routes.global_settings import global_settings
 from app.routes.home import home
 from app.routes.instances import instances
 from app.routes.jobs import jobs
@@ -92,7 +92,7 @@ BLUEPRINTS = (
     logout,
     instances,
     plugins,
-    global_config,
+    global_settings,
     pro,
     cache,
     logs,

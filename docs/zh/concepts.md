@@ -96,7 +96,7 @@ app2.example.com_WHITELIST_COUNTRY=FR
 app3.example.com_USE_BAD_BEHAVIOR=no
 ```
 
-请注意，在使用 Web 用户界面时，多站点模式是隐式的。您可以选择直接将配置应用于您的服务，也可以设置一个全局配置，该配置将应用于所有服务（您仍然可以对特定服务直接应用例外）：
+请注意，在使用 Web 用户界面时，多站点模式是隐式的。您可以选择直接将配置应用于您的服务，也可以设置全局设置并将其应用于所有服务（您仍然可以对特定服务直接应用例外）：
 
 <figure markdown>
   ![概述](assets/img/ui-multisite.png){ align=center, width="600" }

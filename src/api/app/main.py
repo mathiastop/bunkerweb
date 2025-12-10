@@ -120,7 +120,7 @@ This API is the internal control plane for BunkerWeb. It manages configuration, 
 - Core: `/ping` and `/health` offer lightweight liveness probes.
 - Auth: `POST /auth` exchanges Basic credentials or the admin override token for a Biscuit; admin users may also authenticate with HTTP Basic directly.
 - Instances: register, list, update, and remove instances or broadcast `/ping`, `/reload`, and `/stop` to all or specific hosts.
-- Global config: `GET`/`PATCH /global_config` read or update API-owned global settings without touching other sources.
+- Global settings: `GET`/`PATCH /global_settings` read or update API-owned global settings without touching other sources.
 - Services: create, rename, toggle draft/online modes, convert, and delete services while keeping prefixed variables consistent.
 - Custom configs: manage HTTP/stream/ModSecurity/CRS snippets via JSON payloads or uploads with `GET`/`POST`/`PATCH`/`DELETE /configs`.
 - Bans: aggregate current bans and orchestrate ban/unban operations across instances with flexible bulk payloads.
@@ -166,7 +166,7 @@ tags_metadata = [
     {"name": "auth", "description": "Authentication and Biscuit issuance"},
     {"name": "bans", "description": "Operations related to ban management"},
     {"name": "instances", "description": "Operations related to instance management"},
-    {"name": "global_config", "description": "Operations related to global configuration"},
+    {"name": "global_settings", "description": "Operations related to global settings"},
     {"name": "services", "description": "Operations related to service management"},
     {"name": "configs", "description": "Operations related to custom NGINX configs"},
     {"name": "plugins", "description": "Operations related to plugin management"},
