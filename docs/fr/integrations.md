@@ -1753,6 +1753,66 @@ volumes:
     sudo chmod -R 770 bw-data
     ```
 
+### Paramètres du conteneur Scheduler
+
+Le Scheduler est le worker du plan de contrôle qui lit les paramètres, rend les configs et les pousse vers les instances BunkerWeb. Les réglages sont centralisés ici avec leurs valeurs par défaut et acceptées.
+
+#### Sources de configuration et priorité
+
+1. Variables d'environnement (y compris `environment:` Docker/Compose)
+2. Secrets dans `/run/secrets/<VAR>` (chargés automatiquement par l'entrypoint)
+3. Valeurs par défaut intégrées
+
+#### Référence de configuration (power users)
+
+##### Runtime & sécurité
+
+| Setting                         | Description                                                                      | Valeurs acceptées                                      | Défaut                                        |
+| ------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------- |
+| `HEALTHCHECK_INTERVAL`          | Secondes entre les healthchecks du Scheduler                                     | Secondes entières                                      | `30`                                          |
+| `RELOAD_MIN_TIMEOUT`            | Secondes minimales entre deux reloads successifs                                 | Secondes entières                                      | `5`                                           |
+| `DISABLE_CONFIGURATION_TESTING` | Sauter les tests de configuration avant application                              | `yes` ou `no`                                          | `no`                                          |
+| `IGNORE_FAIL_SENDING_CONFIG`    | Continuer même si certaines instances ne reçoivent pas la config                 | `yes` ou `no`                                          | `no`                                          |
+| `IGNORE_REGEX_CHECK`            | Ignorer la validation regex des paramètres (partagé avec autoconf)               | `yes` ou `no`                                          | `no`                                          |
+| `TZ`                            | Fuseau horaire pour les logs du Scheduler, tâches type cron, sauvegardes et dates | Nom de base TZ (ex. `UTC`, `Europe/Paris`)             | unset (défaut conteneur, généralement UTC)    |
+
+##### Base de données
+
+| Setting                 | Description                                                                                | Valeurs acceptées           | Défaut                                      |
+| ----------------------- | ------------------------------------------------------------------------------------------ | --------------------------- | ------------------------------------------- |
+| `DATABASE_URI`          | DSN principal de base de données (partagé avec autoconf et les instances)                  | DSN SQLAlchemy              | `sqlite:////var/lib/bunkerweb/db.sqlite3`   |
+| `DATABASE_URI_READONLY` | DSN optionnel en lecture seule ; le Scheduler bascule en RO si c'est tout ce qui fonctionne | DSN SQLAlchemy ou vide      | unset                                       |
+
+##### Logging
+
+| Setting                         | Description                                                                    | Valeurs acceptées                                      | Défaut                                                                 |
+| ------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------ | ---------------------------------------------------------------------- |
+| `LOG_LEVEL`, `CUSTOM_LOG_LEVEL` | Niveau de log de base / override                                               | `debug`, `info`, `warning`, `error`, `critical`        | `info`                                                                 |
+| `LOG_TYPES`                     | Destinations                                                                   | `stderr`/`file`/`syslog` séparés par espaces            | `stderr`                                                               |
+| `SCHEDULER_LOG_TO_FILE`         | Activer le log fichier et définir le chemin par défaut                         | `yes` ou `no`                                          | `no`                                                                   |
+| `LOG_FILE_PATH`                 | Chemin de log personnalisé (utilisé quand `LOG_TYPES` inclut `file`)           | Chemin de fichier                                      | `/var/log/bunkerweb/scheduler.log` avec `SCHEDULER_LOG_TO_FILE=yes`, sinon unset |
+| `LOG_SYSLOG_ADDRESS`            | Cible syslog (`udp://host:514`, `tcp://host:514`, ou chemin de socket)         | Host:port, hôte préfixé protocole ou socket            | unset                                                                 |
+| `LOG_SYSLOG_TAG`                | Ident/tag syslog                                                               | Chaîne                                                 | `bw-scheduler`                                                         |
+
+### Paramètres du conteneur UI
+
+Le conteneur UI respecte aussi `TZ` pour localiser les logs et les tâches planifiées (ex. nettoyages lancés via l'UI).
+
+| Setting | Description                                   | Valeurs acceptées                              | Défaut                                       |
+| ------- | --------------------------------------------- | ---------------------------------------------- | -------------------------------------------- |
+| `TZ`    | Fuseau horaire pour les logs UI et actions planifiées | Nom dans la base TZ (ex. `UTC`, `Europe/Paris`) | unset (défaut conteneur, généralement UTC)   |
+
+#### Logging
+
+| Setting                         | Description                                                                       | Valeurs acceptées                                      | Défaut                                                             |
+| ------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------ |
+| `LOG_LEVEL`, `CUSTOM_LOG_LEVEL` | Niveau de base / override                                                         | `debug`, `info`, `warning`, `error`, `critical`        | `info`                                                             |
+| `LOG_TYPES`                     | Destinations                                                                      | `stderr`/`file`/`syslog` séparés par espaces            | `stderr`                                                           |
+| `LOG_FILE_PATH`                 | Chemin pour le log fichier (utilisé si `LOG_TYPES` inclut `file` ou `CAPTURE_OUTPUT=yes`) | Chemin de fichier                                      | `/var/log/bunkerweb/ui.log` quand file/capture, sinon unset       |
+| `LOG_SYSLOG_ADDRESS`            | Cible syslog (`udp://host:514`, `tcp://host:514`, socket)                        | Host:port, hôte préfixé protocole ou chemin            | unset                                                              |
+| `LOG_SYSLOG_TAG`                | Ident/tag syslog                                                                  | Chaîne                                                 | `bw-ui`                                                            |
+| `CAPTURE_OUTPUT`                | Envoyer stdout/stderr Gunicorn vers les sorties de log configurées               | `yes` ou `no`                                          | `no`                                                               |
+
 ### Réseau
 
 Par défaut, le conteneur BunkerWeb écoute (à l'intérieur du conteneur) les **fichiers 8080/tcp** pour **HTTP,** **8443/tcp** pour **HTTPS** et **8443/udp** pour **QUIC**.
@@ -2499,6 +2559,71 @@ networks:
 
 !!! warning "Utilisation de Docker en mode rootless"
     Si vous utilisez [Docker en mode rootless](https://docs.docker.com/engine/security/rootless), vous devrez remplacer le support du socket docker par la valeur suivante : `$XDG_RUNTIME_DIR/docker.sock:/var/run/docker.sock:ro`.
+
+### Paramètres du conteneur Autoconf
+
+Le contrôleur `bw-autoconf` surveille votre orchestrateur et écrit les changements dans la base de données partagée.
+
+#### Sources de configuration et priorité
+
+1. Variables d'environnement (y compris `environment:` Docker/Compose)
+2. Secrets dans `/run/secrets/<VAR>` (chargés automatiquement par l'entrypoint)
+3. Valeurs par défaut intégrées
+
+#### Référence de configuration (power users)
+
+##### Mode & runtime
+
+| Setting               | Description                                                     | Valeurs acceptées                        | Défaut                          |
+| --------------------- | --------------------------------------------------------------- | ---------------------------------------- | ------------------------------- |
+| `AUTOCONF_MODE`       | Activer le contrôleur autoconf                                  | `yes` ou `no`                            | `no`                            |
+| `SWARM_MODE`          | Surveiller les services Swarm au lieu des conteneurs Docker     | `yes` ou `no`                            | `no`                            |
+| `KUBERNETES_MODE`     | Surveiller les ingress/pods Kubernetes au lieu de Docker        | `yes` ou `no`                            | `no`                            |
+| `DOCKER_HOST`         | Socket Docker / URL API distante                                | ex. `unix:///var/run/docker.sock`        | `unix:///var/run/docker.sock`   |
+| `WAIT_RETRY_INTERVAL` | Secondes entre les vérifications de disponibilité des instances | Secondes entières                        | `5`                             |
+| `LOG_SYSLOG_TAG`      | Tag syslog pour les logs autoconf                               | Chaîne                                   | `bw-autoconf`                   |
+| `TZ`                  | Fuseau horaire pour les logs autoconf et les horodatages        | Nom de base TZ (ex. `Europe/Paris`)      | unset (défaut conteneur, souvent UTC) |
+
+##### Base de données & validation
+
+| Setting                 | Description                                                                               | Valeurs acceptées          | Défaut                                      |
+| ----------------------- | ----------------------------------------------------------------------------------------- | -------------------------- | ------------------------------------------- |
+| `DATABASE_URI`          | DSN principal de base de données (doit correspondre à la BD du Scheduler)                 | DSN SQLAlchemy             | `sqlite:////var/lib/bunkerweb/db.sqlite3`   |
+| `DATABASE_URI_READONLY` | DSN optionnel en lecture seule ; autoconf bascule en RO si c'est tout ce qui fonctionne   | DSN SQLAlchemy ou vide     | unset                                       |
+| `IGNORE_REGEX_CHECK`    | Ignorer la validation regex pour les paramètres issus des labels/annotations              | `yes` ou `no`              | `no`                                        |
+
+##### Logging
+
+| Setting                         | Description                                                   | Valeurs acceptées                                      | Défaut                                        |
+| ------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------- |
+| `LOG_LEVEL`, `CUSTOM_LOG_LEVEL` | Niveau de log de base / override                              | `debug`, `info`, `warning`, `error`, `critical`        | `info`                                        |
+| `LOG_TYPES`                     | Destinations                                                  | `stderr`/`file`/`syslog` séparés par espaces            | `stderr`                                      |
+| `LOG_FILE_PATH`                 | Chemin pour le log fichier (quand `LOG_TYPES` inclut `file`)  | Chemin de fichier                                      | unset (définissez le vôtre si vous activez `file`) |
+| `LOG_SYSLOG_ADDRESS`            | Cible syslog (`udp://host:514`, `tcp://host:514`, socket)     | Host:port, hôte préfixé protocole ou chemin            | unset                                         |
+| `LOG_SYSLOG_TAG`                | Ident/tag syslog                                              | Chaîne                                                 | `bw-autoconf`                                 |
+
+##### Portée & filtres de découverte
+
+| Setting                         | Description                                                                     | Valeurs acceptées                                    | Défaut |
+| ------------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------- | ------ |
+| `NAMESPACES`                    | Liste d'espaces/ projets gérés (séparés par espaces) ; unset = tous            | Chaînes séparées par espaces                         | unset  |
+| `DOCKER_IGNORE_LABELS`          | Ignorer des conteneurs/labels lors de la collecte d'instances/services/configs | Clés complètes ou suffixes séparés espace/virgule    | unset  |
+| `SWARM_IGNORE_LABELS`           | Ignorer les services/configs Swarm avec labels correspondants                  | Clés complètes ou suffixes séparés espace/virgule    | unset  |
+| `KUBERNETES_IGNORE_ANNOTATIONS` | Ignorer des annotations d'ingress/pod pendant la découverte                    | Clés complètes ou suffixes séparés espace/virgule    | unset  |
+
+##### Spécifique Kubernetes
+
+| Setting                                 | Description                                                                                           | Valeurs acceptées         | Défaut            |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------- | ----------------- |
+| `KUBERNETES_VERIFY_SSL`                 | Vérifier le TLS de l'API Kubernetes                                                                   | `yes` ou `no`             | `yes`             |
+| `KUBERNETES_SSL_CA_CERT`                | Chemin vers un bundle CA personnalisé pour l'API Kubernetes                                          | Chemin de fichier         | unset             |
+| `USE_KUBERNETES_FQDN`                   | Utiliser `<pod>.<ns>.pod.<domain>` plutôt que l'IP du Pod comme hostname d'instance                   | `yes` ou `no`             | `yes`             |
+| `KUBERNETES_INGRESS_CLASS`              | Ne traiter que les ingress avec cette classe                                                         | Chaîne                    | unset (toutes)    |
+| `KUBERNETES_DOMAIN_NAME`                | Suffixe de domaine du cluster lors de la construction des hôtes upstream                             | Chaîne                    | `cluster.local`   |
+| `KUBERNETES_SERVICE_PROTOCOL`           | Schéma utilisé pour les hôtes de reverse proxy générés                                               | `http` ou `https`         | `http`            |
+| `BUNKERWEB_SERVICE_NAME`                | Nom du Service lu lors du patch du statut Ingress avec l'adresse du load balancer                    | Chaîne                    | `bunkerweb`       |
+| `BUNKERWEB_NAMESPACE`                   | Namespace de ce Service                                                                              | Chaîne                    | `bunkerweb`       |
+| `KUBERNETES_REVERSE_PROXY_SUFFIX_START` | Index de départ pour `REVERSE_PROXY_HOST_n`/`REVERSE_PROXY_URL_n` générés sur les ingress multi-path | Entier (>=0)              | `1`               |
 
 ### Les services d'Autoconf
 
