@@ -862,6 +862,12 @@ configure_full_dns_resolvers() {
     run_cmd systemctl reload bunkerweb-scheduler
 }
 
+# Configure installation_type
+configure_installation_type() {
+    print_status "Setting installation type to $INSTALL_TYPE"
+    echo "$INSTALL_TYPE" > /usr/share/bunkerweb/INSTALL_TYPE
+}
+
 # Function to install NGINX on Debian/Ubuntu
 install_nginx_debian() {
     print_step "Installing NGINX on Debian/Ubuntu"

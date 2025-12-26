@@ -11,7 +11,7 @@ for deps_path in [join(sep, "usr", "share", "bunkerweb", *paths) for paths in ((
         sys_path.append(deps_path)
 
 from Database import Database  # type: ignore
-from common_utils import get_integration  # type: ignore
+from common_utils import get_integration, get_installation_type  # type: ignore
 from logger import setup_logger  # type: ignore
 from API import API  # type: ignore
 
@@ -23,11 +23,12 @@ try:
     token = getenv("CERTBOT_TOKEN", "")
     validation = getenv("CERTBOT_VALIDATION", "")
     integration = get_integration()
+    install_type = get_installation_type()
 
     LOGGER.info(f"Detected {integration} integration")
 
     # Cluster case
-    if integration in ("Docker", "Swarm", "Kubernetes", "Autoconf"):
+    if integration in ("Docker", "Swarm", "Kubernetes", "Autoconf") or install_type in ("manager"):
         db = Database(LOGGER, sqlalchemy_string=getenv("DATABASE_URI"))
 
         instances = db.get_instances()

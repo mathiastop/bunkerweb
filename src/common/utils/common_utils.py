@@ -69,6 +69,14 @@ def get_integration() -> str:
     except:
         return "Unknown"
 
+def get_installation_type() -> str:
+    try:
+        installation_type_path = Path(sep, "usr", "share", "bunkerweb", "INSTALL_TYPE")
+        if installation_type_path.is_file():
+            return installation_type_path.read_text(encoding="utf-8").strip()
+        return "Unknown"
+    except:
+        return "Unknown"
 
 def get_os_info() -> Dict[str, str]:
     os_data = {
